@@ -16,12 +16,23 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 import { BeltGuard } from 'src/belt/belt.guard';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { Product } from './entities/product.entity';
 
 @Controller('products')
+@ApiTags("Products")
+
 export class ProductsController {
   constructor(private readonly prductService: ProductsService) {}
 
   @Post()
+  @ApiCreatedResponse({
+    description : 'Create a new product as response',
+    type: Product
+  })
+  @ApiBadRequestResponse({
+    description : 'Bad Request',
+  })
   @UseGuards(BeltGuard)
   createProduct(@Body(new ValidationPipe()) createProductDto: CreateProductDto) {
     return this.prductService.createProduct(createProductDto);
